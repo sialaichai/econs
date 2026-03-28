@@ -353,7 +353,7 @@
             document.getElementById('generate-html-btn').addEventListener('click', () => {
                 const rows = tableBody.querySelectorAll('tr');
                 if(rows.length > 100 && !confirm(`Generate report for ${rows.length} files?`)) return;
-                const pdfBaseUrl = `https://sialaichai.github.io/exam_db/${PDF_FOLDER}/`;
+                const pdfBaseUrl = `https://sialaichai.github.io/econs/${PDF_FOLDER}/`;
                 let html = `<!DOCTYPE html><html><head><title>Report</title><style>body{font-family:sans-serif;margin:20px;background:#f4f4f4}.pdf-section{margin-bottom:40px;background:#fff;padding:15px;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,0.1)}embed{width:100%;height:800px;border:1px solid #ccc}</style></head><body><h1>Filtered PDF Report</h1>`;
                 rows.forEach(r => {
                     const fname = r.cells[0].textContent, year = r.cells[1].textContent, theme = r.cells[5].textContent;
@@ -369,7 +369,7 @@
                 const { PDFDocument, rgb, StandardFonts } = PDFLib;
                 const mergedPdf = await PDFDocument.create();
                 const font = await mergedPdf.embedFont(StandardFonts.HelveticaBold);
-                const pdfBaseUrl = `https://sialaichai.github.io/exam_db/${PDF_FOLDER}/`;
+                const pdfBaseUrl = `https://sialaichai.github.io/econs/${PDF_FOLDER}/`;
                 for (let r of rows) {
                     const fname = r.cells[0].textContent, year = r.cells[1].textContent;
                     const res = await fetch(`${pdfBaseUrl}${year}/${fname}`);
@@ -385,7 +385,7 @@
             document.getElementById('download-zip-btn').addEventListener('click', async () => {
                 const rows = Array.from(tableBody.querySelectorAll('tr'));
                 if (rows.length === 0) return;
-                const zip = new JSZip(), pdfBaseUrl = `https://sialaichai.github.io/exam_db/${PDF_FOLDER}/`;
+                const zip = new JSZip(), pdfBaseUrl = `https://sialaichai.github.io/econs/${PDF_FOLDER}/`;
                 for (let r of rows) {
                     const fname = r.cells[0].textContent, year = r.cells[1].textContent;
                     const res = await fetch(`${pdfBaseUrl}${year}/${fname}`);
