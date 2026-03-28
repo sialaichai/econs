@@ -286,7 +286,7 @@
 
         let currentFilteredData = [...allData]; 
         let currentSort = { column: 1, asc: false };
-        const baseHeaders = ['Filename', 'Year', 'JC', 'Paper', 'Question', 'Main Topic', 'Other Topics'];
+        const baseHeaders = ['Filename', 'Year', 'PCode/JC', 'Paper', 'Question', 'Main Theme', 'Other Themes'];
         
         document.querySelectorAll('#data-table th').forEach((th, index) => {
             th.addEventListener('click', () => {
