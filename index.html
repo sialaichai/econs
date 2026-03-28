@@ -89,7 +89,7 @@
         .apply-button:hover { background-color: #0056b3; }
         
         /* CUSTOM WIDTHS */
-        #year-filter-btn, #jc-filter-btn, #paper-filter-btn, #question-filter-btn { min-width: 60px; }
+        #year-filter-btn, #Pcode-filter-btn, #paper-filter-btn, #question-filter-btn { min-width: 60px; }
         #topic-filter-btn { min-width: 300px; }
 
         /* UTILS */
@@ -112,7 +112,7 @@
         /* TABLE COLUMNS */
         #data-table th:nth-child(1), #data-table td:nth-child(1) { width: 15%; } /* Filename */
         #data-table th:nth-child(2), #data-table td:nth-child(2) { width: 5%; }  /* Year */
-        #data-table th:nth-child(3), #data-table td:nth-child(3) { width: 5%; }  /* JC */
+        #data-table th:nth-child(3), #data-table td:nth-child(3) { width: 5%; }  /* Pcode */
         #data-table th:nth-child(4), #data-table td:nth-child(4) { width: 5%; }  /* Paper */
         #data-table th:nth-child(5), #data-table td:nth-child(5) { width: 5%; }  /* Question */
     </style>
@@ -144,10 +144,10 @@
                 </div>
 				
                 <div class="dropdown-check-container">
-                    <button id="jc-filter-btn" class="filter-button">JC (<span id="jc-filter-count">0</span>)</button>
-                    <div id="jc-filter-panel" class="dropdown-panel">
-                        <div id="jc-filter-list" class="dropdown-list"></div>
-                        <button id="jc-filter-apply" class="apply-button">Apply</button>
+                    <button id="Pcode-filter-btn" class="filter-button">Pcode (<span id="Pcode-filter-count">0</span>)</button>
+                    <div id="Pcode-filter-panel" class="dropdown-panel">
+                        <div id="Pcode-filter-list" class="dropdown-list"></div>
+                        <button id="Pcode-filter-apply" class="apply-button">Apply</button>
                     </div>
                 </div>
 
@@ -197,7 +197,7 @@
                     <tr>
                         <th>Filename</th>
                         <th>Year</th>
-                        <th>JC</th>
+                        <th>Pcode</th>
                         <th>Paper</th>
                         <th>Question</th>
                         <th>Main Topic</th>
@@ -331,7 +331,7 @@
         // --- STATE VARIABLES ---
         let selectedTopics = new Set();
         let selectedYears = new Set();
-        let selectedJCs = new Set();    // Added JC
+        let selectedPcodes = new Set();    // Added JC
         let selectedPapers = new Set();
         let selectedQuestions = new Set();
         
@@ -339,25 +339,25 @@
         const pdfViewer = document.getElementById('pdf-viewer');
         const fileCountDisplay = document.getElementById('file-count-display');
         
-        // --- NORMALIZE DATA (Handle JC field) ---
+        // --- NORMALIZE DATA (Handle Pcode field) ---
         allData = allData.map(item => {
             let q = (item.question || '').trim();
             q = q.replace(/\.pdf$/i, '').replace(/^q0+(\d)/i, 'q$1');
             return {
                 filename: (item.filename || '').trim(),
                 year: (item.year || '').trim(),
-                jc: (item.jc || '').trim(), // New Field
+                Pcode: (item.Pcode || '').trim(), // New Field
                 paper: (item.paper || '').trim(),
                 question: q, 
-                mainTopic: (item.mainTopic || '').trim(),
-                otherTopics: Array.isArray(item.otherTopics) ? item.otherTopics.map(t => t.trim()).filter(t => t !== "") : []
+                mainTheme: (item.mainTheme || '').trim(),
+                otherThemes: Array.isArray(item.otherThemes) ? item.otherThemes.map(t => t.trim()).filter(t => t !== "") : []
             };
         });
 
         // --- NEW: Sort State & Listeners ---
         let currentFilteredData = [...allData]; 
         let currentSort = { column: 1, asc: false }; // Default: Year (index 1), Descending
-        const baseHeaders = ['Filename', 'Year', 'JC', 'Paper', 'Question', 'Main Topic', 'Other Topics'];
+        const baseHeaders = ['Filename', 'Year', 'Pcode', 'Paper', 'Question', 'Main Topic', 'Other Topics'];
         const headers = document.querySelectorAll('#data-table th');
         
         headers.forEach((th, index) => {
@@ -387,9 +387,9 @@
                 return numA !== numB ? numB - numA : b.localeCompare(a);
             };
 
-            const topics = getUniques(i => i.mainTopic.split(/[;,]/).map(s=>s.trim()), undefined);
+            const topics = getUniques(i => i.mainTheme.split(/[;,]/).map(s=>s.trim()), undefined);
             const years = getUniques(i => i.year, yearSort);
-            const jcs = getUniques(i => i.jc, undefined); // JC List
+            const Pcodes = getUniques(i => i.Pcode, undefined); // JC List
             const papers = getUniques(i => i.paper, undefined);
             const questions = getUniques(i => i.question, naturalSort);
 
@@ -404,7 +404,7 @@
             }
             setupList('topic-filter-list', topics, 'topic-checkbox');
             setupList('year-filter-list', years, 'year-checkbox');
-            setupList('jc-filter-list', jcs, 'jc-checkbox'); // Setup JC
+            setupList('Pcode-filter-list', Pcodes, 'Pcode-checkbox'); // Setup JC
             setupList('paper-filter-list', papers, 'paper-checkbox');
             setupList('question-filter-list', questions, 'question-checkbox');
         }
@@ -422,12 +422,12 @@
             };
             setup('topic-filter-btn', 'topic-filter-panel', 'topic-filter-list', 'topic-filter-apply', selectedTopics, 'topic-checkbox');
             setup('year-filter-btn', 'year-filter-panel', 'year-filter-list', 'year-filter-apply', selectedYears, 'year-checkbox');
-            setup('jc-filter-btn', 'jc-filter-panel', 'jc-filter-list', 'jc-filter-apply', selectedJCs, 'jc-checkbox'); // Hook up JC
+            setup('Pcode-filter-btn', 'Pcode-filter-panel', 'Pcode-filter-list', 'Pcode-filter-apply', selectedPcodes, 'Pcode-checkbox'); // Hook up JC
             setup('paper-filter-btn', 'paper-filter-panel', 'paper-filter-list', 'paper-filter-apply', selectedPapers, 'paper-checkbox');
             setup('question-filter-btn', 'question-filter-panel', 'question-filter-list', 'question-filter-apply', selectedQuestions, 'question-checkbox');
 
             document.addEventListener('click', (e) => {
-                ['topic-filter-panel', 'year-filter-panel', 'jc-filter-panel', 'paper-filter-panel', 'question-filter-panel'].forEach(id => {
+                ['topic-filter-panel', 'year-filter-panel', 'Pcode-filter-panel', 'paper-filter-panel', 'question-filter-panel'].forEach(id => {
                     const p = document.getElementById(id);
                     if(p && !p.contains(e.target) && !e.target.closest('.filter-button')) p.style.display='none';
                 });
@@ -445,13 +445,13 @@
                 rows.forEach(r => {
                     const fname = r.cells[0].textContent;
                     const year = r.cells[1].textContent;
-                    // Column Index 5 is Main Topic (Filename=0, Year=1, JC=2, Paper=3, Question=4, Topic=5)
-                    const mainTopic = r.cells[5].textContent; 
+                    // Column Index 5 is Main Topic (Filename=0, Year=1, Pcode=2, Paper=3, Question=4, Topic=5)
+                    const mainTheme = r.cells[5].textContent; 
                     
                     html += `
                         <div class='pdf-section'>
                             <div class='header-row'>
-                                <b>${fname}</b> <span style="color:#666; font-size:0.9em;">(${mainTopic})</span>
+                                <b>${fname}</b> <span style="color:#666; font-size:0.9em;">(${mainTheme})</span>
                             </div>
                             <embed src='${pdfBaseUrl}${year}/${fname}' type='application/pdf' />
                         </div>
@@ -607,15 +607,15 @@
             const includeOther = document.getElementById('include-other-topics').checked;
             fd = fd.filter(item => {
               // Match if selected topic is the main topic
-              if (selectedTopics.has(item.mainTopic)) return true;
-              // If enabled, also match if it appears in otherTopics
-              if (includeOther && item.otherTopics.some(t => selectedTopics.has(t))) return true;
+              if (selectedTopics.has(item.mainTheme)) return true;
+              // If enabled, also match if it appears in otherThemes
+              if (includeOther && item.otherThemes.some(t => selectedTopics.has(t))) return true;
               return false;
             });
           }
         
           if (selectedYears.size > 0) fd = fd.filter(i => selectedYears.has(i.year));
-          if (selectedJCs.size > 0) fd = fd.filter(i => selectedJCs.has(i.jc));
+          if (selectedPcodes.size > 0) fd = fd.filter(i => selectedPcodes.has(i.Pcode));
           if (selectedPapers.size > 0) fd = fd.filter(i => selectedPapers.has(i.paper));
           if (selectedQuestions.size > 0) fd = fd.filter(i => selectedQuestions.has(i.question));
         
@@ -636,7 +636,7 @@
 
             // Dynamic Sorting Logic
             data.sort((a, b) => {
-                const keys = ['filename', 'year', 'jc', 'paper', 'question', 'mainTopic', 'otherTopics'];
+                const keys = ['filename', 'year', 'Pcode', 'paper', 'question', 'mainTheme', 'otherThemes'];
                 const key = keys[currentSort.column];
                 
                 let valA = a[key] || '';
@@ -650,7 +650,7 @@
                 }
                 
                 // Convert arrays to strings for sorting
-                if (key === 'otherTopics') {
+                if (key === 'otherThemes') {
                     valA = valA.join(', ');
                     valB = valB.join(', ');
                 }
@@ -669,11 +669,11 @@
                 tr.innerHTML = `
                     <td>${r.filename}</td>
                     <td>${r.year}</td>
-                    <td>${r.jc}</td>
+                    <td>${r.Pcode}</td>
                     <td>${r.paper}</td>
                     <td>${r.question}</td>
-                    <td>${r.mainTopic}</td>
-                    <td>${r.otherTopics.join(', ')}</td>
+                    <td>${r.mainTheme}</td>
+                    <td>${r.otherThemes.join(', ')}</td>
                 `;
                 // Click row to load PDF
                 tr.addEventListener('click', () => pdfViewer.src = `${PDF_FOLDER}/${r.year}/${r.filename}`);
