@@ -387,7 +387,8 @@
                 return numA !== numB ? numB - numA : b.localeCompare(a);
             };
 
-            const topics = getUniques(i => i.mainTheme.split(/[;,]/).map(s=>s.trim()), undefined);
+            //const topics = getUniques(i => i.mainTheme.split(/[;,]/).map(s=>s.trim()), undefined);
+			const topics = getUniques(i => i.mainTheme, undefined);
             const years = getUniques(i => i.year, yearSort);
             const Pcodes = getUniques(i => i.Pcode, undefined); // JC List
             const papers = getUniques(i => i.paper, undefined);
