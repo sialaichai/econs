@@ -260,8 +260,8 @@
                 jc: (item.jc || '').trim(),
                 paper: (item.paper || '').trim(),
                 question: q, 
-                mainTopic: (item.mainTopic || '').trim(),
-                otherTopics: Array.isArray(item.otherTopics) ? item.otherTopics.map(t => t.trim()).filter(t => t !== "") : []
+                mainTheme: (item.mainTheme || '').trim(),
+                otherTheme: Array.isArray(item.otherTheme) ? item.otherTheme.map(t => t.trim()).filter(t => t !== "") : []
             };
         });
 
@@ -278,7 +278,7 @@
             const naturalSort = (a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
             const yearSort = (a, b) => (parseInt(b.replace(/\D/g, '')) || 0) - (parseInt(a.replace(/\D/g, '')) || 0);
 
-            setupList('topic-filter-list', getUniques(i => i.mainTopic.split(/[;,]/).map(s=>s.trim()), undefined), 'topic-checkbox');
+            setupList('topic-filter-list', getUniques(i => i.mainTheme.split(/[;,]/).map(s=>s.trim()), undefined), 'topic-checkbox');
             setupList('year-filter-list', getUniques(i => i.year, yearSort), 'year-checkbox');
             setupList('jc-filter-list', getUniques(i => i.jc, undefined), 'jc-checkbox');
             setupList('paper-filter-list', getUniques(i => i.paper, undefined), 'paper-checkbox');
@@ -411,7 +411,7 @@ function setupEventListeners(data) {
           let fd = [...data];
           if (selectedTopics.size > 0) {
             const includeOther = document.getElementById('include-other-topics').checked;
-            fd = fd.filter(item => selectedTopics.has(item.mainTopic) || (includeOther && item.otherTopics.some(t => selectedTopics.has(t))));
+            fd = fd.filter(item => selectedTopics.has(item.mainTheme) || (includeOther && item.otherTheme.some(t => selectedTopics.has(t))));
           }
           if (selectedYears.size > 0) fd = fd.filter(i => selectedYears.has(i.year));
           if (selectedJCs.size > 0) fd = fd.filter(i => selectedJCs.has(i.jc));
@@ -426,7 +426,7 @@ function setupEventListeners(data) {
             headers.forEach((th, index) => th.textContent = baseHeaders[index] + (currentSort.column === index ? (currentSort.asc ? ' ▲' : ' ▼') : ''));
 
             data.sort((a, b) => {
-                const keys = ['filename', 'year', 'jc', 'paper', 'question', 'mainTopic', 'otherTopics'];
+                const keys = ['filename', 'year', 'jc', 'paper', 'question', 'mainTheme', 'otherTheme'];
                 let valA = a[keys[currentSort.column]], valB = b[keys[currentSort.column]];
                 if (keys[currentSort.column] === 'year') return currentSort.asc ? valA - valB : valB - valA;
                 return currentSort.asc ? String(valA).localeCompare(String(valB), undefined, { numeric: true }) : String(valB).localeCompare(String(valA), undefined, { numeric: true });
@@ -435,7 +435,7 @@ function setupEventListeners(data) {
             tableBody.innerHTML = '';
             data.slice(0, 500).forEach(r => {
                 const tr = document.createElement('tr');
-                tr.innerHTML = `<td>${r.filename}</td><td>${r.year}</td><td>${r.jc}</td><td>${r.paper}</td><td>${r.question}</td><td>${r.mainTopic}</td><td>${r.otherTopics.join(', ')}</td>`;
+                tr.innerHTML = `<td>${r.filename}</td><td>${r.year}</td><td>${r.jc}</td><td>${r.paper}</td><td>${r.question}</td><td>${r.mainTheme}</td><td>${r.otherTheme.join(', ')}</td>`;
                 
                 // Decryption Logic for Viewing PDF
                 tr.addEventListener('click', async () => {
