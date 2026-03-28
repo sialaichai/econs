@@ -89,7 +89,7 @@
         .apply-button:hover { background-color: #0056b3; }
         
         /* CUSTOM WIDTHS */
-        #year-filter-btn, #Pcode-filter-btn, #paper-filter-btn, #question-filter-btn { min-width: 60px; }
+        #year-filter-btn, #pcode-filter-btn, #paper-filter-btn, #question-filter-btn { min-width: 60px; }
         #topic-filter-btn { min-width: 300px; }
 
         /* UTILS */
@@ -144,10 +144,10 @@
                 </div>
 				
                 <div class="dropdown-check-container">
-                    <button id="Pcode-filter-btn" class="filter-button">Pcode (<span id="Pcode-filter-count">0</span>)</button>
-                    <div id="Pcode-filter-panel" class="dropdown-panel">
-                        <div id="Pcode-filter-list" class="dropdown-list"></div>
-                        <button id="Pcode-filter-apply" class="apply-button">Apply</button>
+                    <button id="pcode-filter-btn" class="filter-button">pcode (<span id="pcode-filter-count">0</span>)</button>
+                    <div id="pcode-filter-panel" class="dropdown-panel">
+                        <div id="pcode-filter-list" class="dropdown-list"></div>
+                        <button id="pcode-filter-apply" class="apply-button">Apply</button>
                     </div>
                 </div>
 
@@ -346,7 +346,7 @@
             return {
                 filename: (item.filename || '').trim(),
                 year: (item.year || '').trim(),
-                Pcode: (item.Pcode || '').trim(), // New Field
+                pcode: (item.pcode || '').trim(), // New Field
                 paper: (item.paper || '').trim(),
                 question: q, 
                 mainTheme: (item.mainTheme || '').trim(),
@@ -390,7 +390,7 @@
             //const topics = getUniques(i => i.mainTheme.split(/[;,]/).map(s=>s.trim()), undefined);
 			const topics = getUniques(i => i.mainTheme, undefined);
             const years = getUniques(i => i.year, yearSort);
-            const Pcodes = getUniques(i => i.Pcode, undefined); // JC List
+            const pcodes = getUniques(i => i.pcode, undefined); // JC List
             const papers = getUniques(i => i.paper, undefined);
             const questions = getUniques(i => i.question, naturalSort);
 
@@ -405,7 +405,7 @@
             }
             setupList('topic-filter-list', topics, 'topic-checkbox');
             setupList('year-filter-list', years, 'year-checkbox');
-            setupList('Pcode-filter-list', Pcodes, 'Pcode-checkbox'); // Setup JC
+            setupList('pcode-filter-list', pcodes, 'pcode-checkbox'); // Setup JC
             setupList('paper-filter-list', papers, 'paper-checkbox');
             setupList('question-filter-list', questions, 'question-checkbox');
         }
@@ -423,12 +423,12 @@
             };
             setup('topic-filter-btn', 'topic-filter-panel', 'topic-filter-list', 'topic-filter-apply', selectedTopics, 'topic-checkbox');
             setup('year-filter-btn', 'year-filter-panel', 'year-filter-list', 'year-filter-apply', selectedYears, 'year-checkbox');
-            setup('Pcode-filter-btn', 'Pcode-filter-panel', 'Pcode-filter-list', 'Pcode-filter-apply', selectedPcodes, 'Pcode-checkbox'); // Hook up JC
+            setup('pcode-filter-btn', 'pcode-filter-panel', 'pcode-filter-list', 'pcode-filter-apply', selectedpcodes, 'pcode-checkbox'); // Hook up JC
             setup('paper-filter-btn', 'paper-filter-panel', 'paper-filter-list', 'paper-filter-apply', selectedPapers, 'paper-checkbox');
             setup('question-filter-btn', 'question-filter-panel', 'question-filter-list', 'question-filter-apply', selectedQuestions, 'question-checkbox');
 
             document.addEventListener('click', (e) => {
-                ['topic-filter-panel', 'year-filter-panel', 'Pcode-filter-panel', 'paper-filter-panel', 'question-filter-panel'].forEach(id => {
+                ['topic-filter-panel', 'year-filter-panel', 'pcode-filter-panel', 'paper-filter-panel', 'question-filter-panel'].forEach(id => {
                     const p = document.getElementById(id);
                     if(p && !p.contains(e.target) && !e.target.closest('.filter-button')) p.style.display='none';
                 });
@@ -616,7 +616,7 @@
           }
         
           if (selectedYears.size > 0) fd = fd.filter(i => selectedYears.has(i.year));
-          if (selectedPcodes.size > 0) fd = fd.filter(i => selectedPcodes.has(i.Pcode));
+          if (selectedPcodes.size > 0) fd = fd.filter(i => selectedPcodes.has(i.pcode));
           if (selectedPapers.size > 0) fd = fd.filter(i => selectedPapers.has(i.paper));
           if (selectedQuestions.size > 0) fd = fd.filter(i => selectedQuestions.has(i.question));
         
@@ -637,7 +637,7 @@
 
             // Dynamic Sorting Logic
             data.sort((a, b) => {
-                const keys = ['filename', 'year', 'Pcode', 'paper', 'question', 'mainTheme', 'otherThemes'];
+                const keys = ['filename', 'year', 'pcode', 'paper', 'question', 'mainTheme', 'otherThemes'];
                 const key = keys[currentSort.column];
                 
                 let valA = a[key] || '';
@@ -670,7 +670,7 @@
                 tr.innerHTML = `
                     <td>${r.filename}</td>
                     <td>${r.year}</td>
-                    <td>${r.Pcode}</td>
+                    <td>${r.pcode}</td>
                     <td>${r.paper}</td>
                     <td>${r.question}</td>
                     <td>${r.mainTheme}</td>
